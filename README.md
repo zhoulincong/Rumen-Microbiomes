@@ -41,9 +41,9 @@ If you want to focus on a filtered version of the graph (specifically focusing o
 1. Open **Neo4j Desktop** and create a new project.
 2. Inside the project, create a new database.
 3. Import the two CSV files: `an.csv` and `wu.csv` by going to the **"Import"** section.
-   - `an.csv`: Contains data related to EC nodes.
+   - `an.csv`: Contains data related to Angus nodes.
    - `wu.csv`: Contains data related to Wuling nodes.
-4. Once the CSV files are imported, open the **Neo4j Browser** and run the Cypher queries provided in the `filtered_graph.txt` file to build the graph focusing on the `EC` nodes.
+4. Once the CSV files are imported, open the **Neo4j Browser** and run the Cypher queries provided in the `filtered_graph.txt` file to build the graph focusing on the select `EC` nodes.
 
 ### 3. Start the Database
 Start your database instance and ensure it connects successfully. You can interact with it via the **Neo4j Browser** at the default address: `http://localhost:7474`.
