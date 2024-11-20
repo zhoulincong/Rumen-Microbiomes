@@ -9,7 +9,7 @@
 
 ├── filtered_graph.txt   # Cypher queries to create the filtered graph (focused on EC)
 
-├── an.csv               # Data file for EC-related nodes
+├── an.csv               # Data file for Angus-related nodes
 
 ├── wu.csv               # Data file for Wuling-related nodes
 
