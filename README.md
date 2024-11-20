@@ -5,6 +5,7 @@
 
 ## Project Structure
 
+
 ├── dump/                # Contains the Neo4j database dump files
 ├── full_graph.dump      # Full graph data for entire knowledge graph
 ├── filtered_graph.txt   # Cypher queries to create the filtered graph (focused on EC)
