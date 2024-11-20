@@ -6,9 +6,13 @@
 ## Project Structure
 
 ├── full_graph.dump      # Full graph data for entire knowledge graph
+
 ├── filtered_graph.txt   # Cypher queries to create the filtered graph (focused on EC)
+
 ├── an.csv               # Data file for EC-related nodes
+
 ├── wu.csv               # Data file for Wuling-related nodes
+
 ├── full_graph.html      # Web visualization for the full graph
 ├── filtered_graph.html  # Web visualization for the filtered EC-focused graph
 ├── README.md            # Project documentation
