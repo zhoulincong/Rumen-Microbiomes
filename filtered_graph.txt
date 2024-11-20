@@ -1,0 +1,134 @@
+// 导入 an.csv
+LOAD CSV WITH HEADERS FROM "file:///an.csv" AS row
+WITH DISTINCT row.SpeciesName AS speciesName, row.EC AS ecName
+
+// 设置SpeciesName的颜色
+WITH speciesName, ecName,
+     CASE 
+         WHEN speciesName CONTAINS "Archaea" THEN "rgba(255, 226, 0, 1)"  // 深黄色，透明度为1
+         WHEN speciesName CONTAINS "Bacteria" THEN "rgba(204, 204, 0, 1)"  // 透明度为1
+         ELSE "rgba(0, 255, 255, 1)"  // 默认颜色，透明度为1
+     END AS speciesColor
+
+// 确保只创建一个 Angus 实体
+MERGE (angus:Angus {
+    name: "Angus",
+    color: "rgba(252, 141, 97, 1)",  // 颜色设置为不透明的 rgba 值
+    shape: "square",
+    pagerank: 40
+})
+
+// 确保只创建一个 SpeciesName 实体
+MERGE (species:SpeciesName {
+    name: speciesName,
+    shape: "circle",
+    color: speciesColor,
+    pagerank: 10
+})
+
+// 根据不同的EC值设置EC的颜色，并确保EC不为空
+WITH species, ecName
+WHERE ecName IS NOT NULL
+
+// 创建或获取 EC 实体和颜色
+WITH species, ecName,
+     CASE 
+         WHEN ecName IN ["3.2.1.91", "3.2.1.21", "3.2.1.4"] THEN "rgba(187, 183, 214, 1)"  // Cellulose
+         WHEN ecName IN ["3.2.1.78", "3.2.1.37", "3.2.1.55", "3.2.1.25", "3.2.1.22", "3.2.1.8", "3.2.1.6"] THEN "rgba(238, 124, 111, 1)"  // Hemicellulose
+         WHEN ecName IN ["2.7.2.1", "2.3.1.8"] THEN "rgba(126, 171, 202, 1)"  // Acetate
+         WHEN ecName IN ["1.3.5.1", "1.3.5.4", "5.1.99.1", "5.4.99.2"] THEN "rgba(100, 33, 0, 0.5)"  // Propionate
+         WHEN ecName IN ["1.1.1.36", "2.3.1.9", "2.3.1.19", "2.7.2.7", "2.8.3.8", "2.8.3.9"] THEN "rgba(244, 175, 99, 1)"  // Butyrate
+         ELSE "rgba(138, 156, 196, 1)"  // 默认颜色
+     END AS ecColor
+
+// 确保只创建一个 EC 实体
+MERGE (ec:EC {
+    name: ecName,
+    shape: "circle",
+    color: ecColor,
+    pagerank: 20
+})
+
+// 连接 EC 到 SpeciesName
+MERGE (ec)-[:BELONGTO { weight: 1 }]->(species)
+
+// 连接 SpeciesName 和 Angus，只有当此SpeciesName与Angus相关时才建立关系
+WITH species
+WHERE species.name IN ["speciesName1", "speciesName2"]  // 替换为实际的与Angus相关的SpeciesName
+MERGE (species)-[:HAS { weight: 2 }]->(angus);
+
+
+// 导入 wu.csv
+LOAD CSV WITH HEADERS FROM "file:///wu.csv" AS row
+WITH DISTINCT row.SpeciesName AS speciesName, row.EC AS ecName
+
+// 设置SpeciesName的颜色
+WITH speciesName, ecName,
+     CASE 
+         WHEN speciesName CONTAINS "Archaea" THEN "rgba(255, 226, 0, 1)"  // 深黄色
+         WHEN speciesName CONTAINS "Bacteria" THEN "rgba(204, 204, 0, 1)"  // 黄色
+         ELSE "rgba(255, 226, 0, 1)"  // 默认颜色，透明度为1
+     END AS speciesColor
+
+// 确保只创建一个 Wuling 实体
+MERGE (wuling:Wuling {
+    name: "Wuling",
+    color: "rgba(100, 186, 159, 1)",  // 设置为不透明的颜色
+    shape: "square",
+    pagerank: 40
+})
+
+// 确保只创建一个 SpeciesName 实体
+MERGE (species:SpeciesName {
+    name: speciesName,
+    shape: "circle",
+    color: speciesColor,
+    pagerank: 10
+})
+
+// 根据不同的EC值设置EC的颜色，并确保EC不为空
+WITH species, ecName
+WHERE ecName IS NOT NULL
+
+// 创建或获取 EC 实体和颜色
+WITH species, ecName,
+     CASE 
+         WHEN ecName IN ["3.2.1.91", "3.2.1.21", "3.2.1.4"] THEN "rgba(187, 183, 214, 1)"  // Cellulose
+         WHEN ecName IN ["3.2.1.78", "3.2.1.37", "3.2.1.55", "3.2.1.25", "3.2.1.22", "3.2.1.8", "3.2.1.6"] THEN "rgba(238, 124, 111, 1)"  // Hemicellulose
+         WHEN ecName IN ["2.7.2.1", "2.3.1.8"] THEN "rgba(100, 33, 0, 0.5)"  // Acetate
+         WHEN ecName IN ["1.3.5.1", "1.3.5.4", "5.1.99.1", "5.4.99.2"] THEN "rgba(126, 171, 202, 1)"  // Propionate
+         WHEN ecName IN ["1.1.1.36", "2.3.1.9", "2.3.1.19", "2.7.2.7", "2.8.3.8", "2.8.3.9"] THEN "rgba(244, 175, 99, 1)"  // Butyrate
+         ELSE "rgba(138, 156, 196, 1)"  // 默认颜色
+     END AS ecColor
+
+// 确保只创建一个 EC 实体
+MERGE (ec:EC {
+    name: ecName,
+    shape: "circle",
+    color: ecColor,
+    pagerank: 20
+})
+
+// 连接 EC 到 SpeciesName
+MERGE (ec)-[:BELONGTO { weight: 1 }]->(species)
+
+// 连接 SpeciesName 和 Wuling，只有当此SpeciesName与Wuling相关时才建立关系
+WITH species
+WHERE species.name IN ["speciesName3", "speciesName4"]  // 替换为实际的与Wuling相关的SpeciesName
+MERGE (species)-[:HAS { weight: 4 }]->(wuling);
+
+// 从 an.csv 创建 Angus 和 SpeciesName 之间的关系
+LOAD CSV WITH HEADERS FROM "file:///an.csv" AS row
+WITH DISTINCT row.SpeciesName AS speciesName
+
+// 创建 Angus 与 SpeciesName 之间的关系
+MATCH (angus:Angus), (species:SpeciesName {name: speciesName})
+MERGE (angus)-[:HAS { weight: 4 }]->(species);
+
+// 从 wu.csv 创建 Wuling 和 SpeciesName 之间的关系
+LOAD CSV WITH HEADERS FROM "file:///wu.csv" AS row
+WITH DISTINCT row.SpeciesName AS speciesName
+
+// 创建 Wuling 与 SpeciesName 之间的关系
+MATCH (wuling:Wuling), (species:SpeciesName {name: speciesName})
+MERGE (wuling)-[:HAS { weight: 4 }]->(species);
