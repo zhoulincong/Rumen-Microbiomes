@@ -70,9 +70,3 @@ If you have any suggestions for improvements or encounter issues, feel free to s
 License
 
 This project is licensed under the MIT License. Feel free to use and modify it as you wish.
-
-### Key Changes:
-1. **Headings** are now properly formatted with `##` and `###` for better structure.
-2. **Bold text** is used for the project name and important keywords like **Neo4j Desktop** and **Neovis.js**.
-3. **Code blocks** are added for Cypher queries, commands, and project structure for better readability.
-4. The sections have been organized with standard GitHub markdown formatting.
