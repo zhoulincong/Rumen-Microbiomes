@@ -5,12 +5,13 @@
 
 ## Project Structure
 
-
 ├── dump/                # Contains the Neo4j database dump files
 ├── full_graph.dump      # Full graph data for entire knowledge graph
 ├── filtered_graph.txt   # Cypher queries to create the filtered graph (focused on EC)
 ├── an.csv               # Data file for EC-related nodes
 ├── wu.csv               # Data file for Wuling-related nodes
+├── full_graph.html      # Web visualization for the full graph
+├── filtered_graph.html  # Web visualization for the filtered EC-focused graph
 ├── README.md            # Project documentation
 └── LICENSE              # Project license
 
@@ -46,6 +47,16 @@ If you want to focus on a filtered version of the graph (specifically focusing o
 
 ### 3. Start the Database
 Start your database instance and ensure it connects successfully. You can interact with it via the **Neo4j Browser** at the default address: `http://localhost:7474`.
+
+## Web Visualization
+
+I use **Neovis.js** to visualize the graph structure from the Neo4j database as a graph on a webpage. To view the graph visualizations:
+
+### 1. Full Graph Visualization
+To visualize the entire knowledge graph (including all nodes and relationships), open the `full_graph.html` file in your browser. This will display the entire dataset in an interactive graph.
+
+### 2. Filtered EC-focused Graph Visualization
+To visualize a filtered version of the graph (focusing on EC-related nodes and relationships), open the `filtered_graph.html` file in your browser. This file will display only the nodes and relationships related to **EC**.
 
 ## Cypher Query Examples
 In the **Neo4j Browser**, you can use **Cypher** language to query the graph. Here are some simple query examples:
