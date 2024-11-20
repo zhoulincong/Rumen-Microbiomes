@@ -1,0 +1,254 @@
+<!doctype html>
+<html>
+<head>
+    <title>Neovis.js Visualization</title>
+    <style type="text/css">
+        html, body {
+            font-family: Arial, sans-serif;
+            font-size: 16px;
+        }
+
+        #viz {
+            width: 1500px;
+            height: 600px;
+            border: 1px solid lightgray;
+            font: 22pt Arial;
+            position: relative;
+        }
+
+        #legend {
+            position: absolute;
+            bottom: 23px;
+            right: 10px;
+            background-color: rgba(255, 255, 255, 0.8);
+            border: 1px solid #ccc;
+            padding: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+            max-width: 300px;
+            font-size: 14px;
+            z-index: 2; /* Ensure legend is on top of the graph */
+        }
+
+        #legend h3 {
+            margin-top: 0;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .legend-item div {
+            width: 20px;
+            height: 20px;
+            margin-right: 8px;
+        }
+
+        .legend-item span {
+            line-height: 20px;
+        }
+
+        .circle {
+            border-radius: 50%;
+        }
+
+        .square {
+            width: 20px;
+            height: 20px;
+        }
+
+        /* 这里将星形图标改为 SVG */
+        .star {
+            width: 20px;
+            height: 20px;
+        }
+
+    </style>
+
+    <script src="https://unpkg.com/neovis.js/dist/neovis.js"></script>
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/0.4.1/html2canvas.min.js"></script> <!-- 引入 html2canvas -->
+    
+    <script type="text/javascript">
+        var viz;
+
+        function draw() {
+            var config = {
+                containerId: "viz",
+                neo4j: {
+                    serverUrl: "bolt://localhost:7687",
+                    serverUser: "neo4j",
+                    serverPassword: "12345678" // 请替换为您的实际密码
+                },
+                labels: {
+                    Angus: {
+                        caption: "name",
+                        size: "pagerank",
+                        color: "color",  // 设置颜色
+                        shape: "shape"  // 设置形状
+                    },
+                    Wuling: {
+                        caption: "name",
+                        size: "pagerank",
+                        color: "color",  // 设置颜色
+                        shape: "shape"  // 设置形状
+                    },
+                    SpeciesName: {
+                        caption: "name",
+                        size: "pagerank",
+                        color: "color",  // 设置颜色
+                        shape: "shape"  // 设置形状
+                    },
+                    EC: {
+                        caption: "name",
+                        size: "pagerank",
+                        color: "color",  // 设置颜色
+                        shape: "shape"  // 设置形状
+                    }
+                },
+                relationships: {
+                    HAS: {
+                        value: "4",
+                        color: "color",
+                        transparency: "transparency",
+                        lineType: "lineType",
+                        caption: true
+                    },
+                    BELONGTO: {
+                        value: "1",
+                        color: "color",
+                        transparency: "transparency",
+                        lineType: "lineType",
+                        caption: true
+                    },
+                    INTERACTS: {
+                        value: "weight",
+                        color: "color",
+                        transparency: "transparency",
+                        lineType: "lineType",
+                        caption: true
+                    }
+                },
+                hierarchical: true,
+                initialCypher: "MATCH (n)-[r]->(m) RETURN n, r, m"
+            };
+
+            viz = new NeoVis.default(config);
+            viz.render();
+
+            // 设置默认节点位置
+            viz.events.afterRender = function() {
+                viz.network.body.nodes.forEach(function(node) {
+                    if (node.position === undefined) {
+                        node.position = {x: Math.random() * 1000, y: Math.random() * 500};
+                    }
+                });
+            };
+
+            console.log(viz);
+        }
+
+        // 使用 html2canvas 导出图谱和图例为一个整体图像
+        function downloadWithLegend() {
+            html2canvas(document.querySelector("#vizWrapper"), {
+                useCORS: true,
+                backgroundColor: null,  // 确保背景透明
+                logging: true,           // 开启日志便于调试
+                allowTaint: true,        // 允许跨域请求
+                letterRendering: true,   // 启用更好的文本渲染
+                x: 0,                    // 确保渲染开始的位置
+                y: 0,                    // 确保渲染开始的位置
+    		scale: 10,             // 增加缩放比例，默认为1，2表示2倍清晰度
+    		width: 5000,             // 提升画布宽度
+    		height: 2000,            // 提升画布高度
+                onrendered: function (canvas) {
+                    var img = canvas.toDataURL("image/png");
+                    var link = document.createElement('a');
+                    link.href = img;
+                    link.download = 'graph_with_legend.png'; // 设置文件名
+                    link.click();
+                }
+            });
+        }
+    </script>
+</head>
+<body onload="draw()">
+    <div id="vizWrapper" style="position: relative;">
+        <div id="viz"></div>
+
+        <div id="legend">
+            <h3>Legend</h3>
+            <div class="legend-item">
+                <div class="square" style="background-color: rgba(252, 141, 97, 1);"></div>
+                <span>Angus rumen</span>
+            </div>
+            <div class="legend-item">
+                <div class="square" style="background-color: rgba(100, 186, 159, 1);"></div>
+                <span>Wuling rumen</span>
+            </div>
+            <div class="legend-item">
+                <div class="circle" style="background-color: rgba(255, 226, 0, 1);"></div>
+                <span>Archaea</span>
+            </div>
+            <div class="legend-item">
+                <div class="circle" style="background-color: rgba(204, 204, 0, 1);"></div>
+                <span>Bacteria</span>
+            </div>
+            <!-- EC 相关项改为 SVG 五角星形状 -->
+            <div class="legend-item">
+                <svg class="star" width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M12 17.27L18.18 21L16.54 13.97L22 9.24L14.81 8.63L12 2L9.19 8.63L2 9.24L7.46 13.97L5.82 21L12 17.27Z" fill="rgba(238, 124, 111, 1)"/>
+                </svg>
+                <span>EC numbers (Hemicellulose)</span>
+            </div>
+            <div class="legend-item">
+                <svg class="star" width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M12 17.27L18.18 21L16.54 13.97L22 9.24L14.81 8.63L12 2L9.19 8.63L2 9.24L7.46 13.97L5.82 21L12 17.27Z" fill="rgba(187, 183, 214, 1)"/>
+                </svg>
+                <span>EC numbers (Cellulose)</span>
+            </div>
+            <div class="legend-item">
+                <svg class="star" width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M12 17.27L18.18 21L16.54 13.97L22 9.24L14.81 8.63L12 2L9.19 8.63L2 9.24L7.46 13.97L5.82 21L12 17.27Z" fill="rgba(126, 171, 202, 1)"/>
+                </svg>
+                <span>EC numbers (Acetate)</span>
+            </div>
+            <div class="legend-item">
+                <svg class="star" width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M12 17.27L18.18 21L16.54 13.97L22 9.24L14.81 8.63L12 2L9.19 8.63L2 9.24L                    7.46 13.97L5.82 21L12 17.27Z" fill="rgba(100, 33, 0, 0.5)"/>
+                </svg>
+                <span>EC numbers (Propionate)</span>
+            </div>
+            <div class="legend-item">
+                <svg class="star" width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M12 17.27L18.18 21L16.54 13.97L22 9.24L14.81 8.63L12 2L9.19 8.63L2 9.24L7.46 13.97L5.82 21L12 17.27Z" fill="rgba(244, 175, 99, 1)"/>
+                </svg>
+                <span>EC numbers (Butyrate)</span>
+            </div>
+        </div>
+
+        <button onclick="downloadWithLegend()">Download Graph with Legend</button>
+    </div>
+
+    <p>Cypher query: <textarea rows="4" cols="50" id="cypher"></textarea></p>
+    <input type="submit" value="Submit" id="reload">
+    <input type="submit" value="Stabilize" id="stabilize">
+</body>
+
+<script>
+    $("#reload").click(function () {
+        var cypher = $("#cypher").val();
+        if (cypher.length > 3) {
+            viz.renderWithCypher(cypher);
+        } else {
+            console.log("Reloading visualization");
+            viz.reload();
+        }
+    });
+
+    $("#stabilize").click(function () {
+        viz.stabilize();
+    });
+</script>
+</html>
